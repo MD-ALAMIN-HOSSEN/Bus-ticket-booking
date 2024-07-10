@@ -17,9 +17,10 @@ import { Feedback } from './entity/Feedback.entity';
 import { Report } from './entity/Report.entity';
 import { Notification } from './entity/Notification.entity';
 import { TicketBookInfo } from './entity/TicketBookInfo.entity';
+import { InfoModule } from './manager/info.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(
+  imports:[ InfoModule,TypeOrmModule.forRoot(
     { type: 'postgres',
     host: 'localhost',
     port: 5001,
