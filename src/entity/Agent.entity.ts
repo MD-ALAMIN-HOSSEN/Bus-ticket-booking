@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
 import { Info } from './Info.entity';
+import { Login } from './Login.entity';
 
 @Entity()
 export class Agent {
@@ -9,4 +10,8 @@ export class Agent {
   @OneToOne(() => Info)
   @JoinColumn()
   info: Info;
+
+  @OneToOne(() => Login)
+    @JoinColumn()
+    login: Login;
 }
