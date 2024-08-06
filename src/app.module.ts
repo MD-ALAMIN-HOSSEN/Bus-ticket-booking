@@ -18,6 +18,7 @@ import { Report } from './entity/Report.entity';
 import { Notification } from './entity/Notification.entity';
 import { TicketBookInfo } from './entity/TicketBookInfo.entity';
 import { InfoModule } from './manager/info.module';
+import { ManagerModule } from './manager/manager.module';
 
 @Module({
   imports:[ InfoModule,TypeOrmModule.forRoot(
@@ -46,7 +47,9 @@ import { InfoModule } from './manager/info.module';
     ],
     autoLoadEntities: true,
     synchronize: true,
-    } )],
+    }),
+    ManagerModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

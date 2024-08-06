@@ -1,10 +1,17 @@
-import { Controller, Post, Body, HttpStatus, Res } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, Res, Get } from '@nestjs/common';
 import { ManagerService } from './manager.service'; // Adjust path as per your project structure
 import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
+import { Agent } from '../entity/agent.entity';
 
 @Controller('manager')
 export class ManagerController {
     constructor(private readonly managerService: ManagerService) {}
+
+
+    @Get('agents')
+    async getAllAgents(): Promise<Agent[]> {
+    return await this.managerService.findAllAgents();
+    }
 
     @Post()
     async createManager(@Body() createManagerDto: CreateManagerDto, @Res() res) {

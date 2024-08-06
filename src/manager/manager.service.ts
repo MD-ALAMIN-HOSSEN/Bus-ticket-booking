@@ -4,6 +4,7 @@ import { Manager } from '../entity/manager.entity'; // Adjust path as per your p
 import { Repository } from 'typeorm';
 import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
 import { Info } from '../entity/info.entity'; // Adjust path as per your project structure
+import { Agent } from '../entity/agent.entity';
 
 @Injectable()
 export class ManagerService {
@@ -12,6 +13,8 @@ export class ManagerService {
         private readonly managerRepository: Repository<Manager>,
         @InjectRepository(Info)
         private readonly infoRepository: Repository<Info>,
+        @InjectRepository(Agent)
+        private readonly agentRepository: Repository<Agent>,
     ) {}
 
     async createManager(createManagerDto: CreateManagerDto): Promise<Manager> {
@@ -27,4 +30,11 @@ export class ManagerService {
         });
         return await this.managerRepository.save(newManager);
     }
+
+    async findAllAgents(): Promise<Agent[]> {
+        return await this.agentRepository.find({
+            relations: ['info'],
+            //relations: ['info', 'login'],
+          });
+      }
 }
