@@ -8,6 +8,7 @@ import {
   Delete,
   Param,
   Put,
+  Session
 } from '@nestjs/common';
 import { ManagerService } from './manager.service'; // Adjust path as per your project structure
 import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
@@ -29,8 +30,10 @@ export class ManagerController {
     return await this.managerService.findAllCustomers();
   }
   @Post('createagent')
-  async createAgent(@Body() createAgentDto: CreateAgentDto): Promise<Agent> {
-    return this.managerService.createAgent(createAgentDto);
+  async createAgent(@Body() createAgentDto: CreateAgentDto, @Session() session: Record<string, any>): Promise<Agent> {
+    const managerId = session.userId;
+    console.log("manager id is ",managerId);
+    return this.managerService.createAgent(createAgentDto,managerId);
   }
 
   @Delete('deleteagent/:id')

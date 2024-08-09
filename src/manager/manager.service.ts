@@ -53,7 +53,7 @@ export class ManagerService {
           });
       }
     
-      async createAgent(createAgentDto: CreateAgentDto): Promise<Agent> {
+      async createAgent(createAgentDto: CreateAgentDto,managerId: string): Promise<Agent> {
         const { info, login } = createAgentDto;
     
         // Create and save Info entity
@@ -69,8 +69,11 @@ export class ManagerService {
           info: newInfo,
           login: newLogin,
         });
-        return await this.agentRepository.save(newAgent);
+        const newAgentSave= await this.agentRepository.save(newAgent);
+        this.assignAgentToManager(managerId, newAgentSave.id);
+        return newAgentSave;
       }
+
       async assignAgentToManager(managerId: string, agentId: string): Promise<ManagerAgent> {
         const manager = await this.managerRepository.findOne({
           where: { id: managerId },
