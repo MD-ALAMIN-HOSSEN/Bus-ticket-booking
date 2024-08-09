@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
 import { Info } from '../entity/info.entity'; // Adjust path as per your project structure
 import { Agent } from '../entity/agent.entity';
-import { Customer } from 'src/entity';
+import { Customer, ManagerAgent } from 'src/entity';
 import { Login } from '../entity/login.entity';
 import { CreateAgentDto } from 'src/dto/createagent.dto';
 
@@ -22,6 +22,8 @@ export class ManagerService {
         private readonly customerRepository: Repository<Customer>,
         @InjectRepository(Login)
         private readonly loginRepository: Repository<Login>,
+        @InjectRepository(ManagerAgent)
+        private managerAgentRepository: Repository<ManagerAgent>,
     ) {}
 
     async createManager(createManagerDto: CreateManagerDto): Promise<Manager> {
@@ -68,6 +70,24 @@ export class ManagerService {
           login: newLogin,
         });
         return await this.agentRepository.save(newAgent);
+      }
+      async assignAgentToManager(managerId: string, agentId: string): Promise<ManagerAgent> {
+        const manager = await this.managerRepository.findOne({
+          where: { id: managerId },
+        });
+        const agent = await this.agentRepository.findOne({
+          where: { id: agentId },
+        });
+    
+        if (!manager || !agent) {
+          throw new Error('Manager or Agent not found');
+        }
+    
+        const managerAgent = new ManagerAgent();
+        managerAgent.manager = manager;
+        managerAgent.agent = agent;
+    
+        return await this.managerAgentRepository.save(managerAgent);
       }
 
       async deleteAgent(agentId: string): Promise<void> {

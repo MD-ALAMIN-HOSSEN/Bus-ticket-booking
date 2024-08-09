@@ -5,10 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Agent } from '../entity/agent.entity';
 import { Manager } from '../entity/Manager.entity';
 import { Info } from '../entity/info.entity'; 
-import { Customer, Login } from 'src/entity';
+import { Customer, Login, ManagerAgent } from 'src/entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Manager,Info, Agent,Customer,Login])],
+  imports: [TypeOrmModule.forFeature([Manager,Info, Agent,Customer,Login,ManagerAgent])],
   controllers: [ManagerController],
   providers: [ManagerService]
 })
