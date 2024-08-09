@@ -69,4 +69,34 @@ export class ManagerService {
         });
         return await this.agentRepository.save(newAgent);
       }
+
+      async deleteAgent(agentId: string): Promise<void> {
+        // Find the agent by id and load its relations
+        const agent = await this.agentRepository.findOne({
+          where: { id: agentId },
+          relations: ['info', 'login'],
+        });
+    
+        if (agent) {
+          // Delete the Agent record
+          await this.agentRepository.remove(agent);
+          // Delete the related Info and Login records
+          await this.infoRepository.remove(agent.info);
+          await this.loginRepository.remove(agent.login);
+    
+        }
+      }
+      async updateAgentName(agentId: string, newName: string): Promise<Info> {
+        const agent = await this.agentRepository.findOne({
+          where: { id: agentId },
+          relations: ['info'],
+        });
+    
+        if (!agent) {
+          throw new Error('Agent not found');
+        }
+    
+        agent.info.name = newName;
+        return await this.infoRepository.save(agent.info);
+      }
 }
