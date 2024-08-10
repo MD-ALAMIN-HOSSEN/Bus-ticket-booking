@@ -38,8 +38,12 @@ export class ManagerController {
   }
 
   @Delete('deleteagent/:id')
-  async deleteAgent(@Param('id') id: string): Promise<void> {
+  async deleteAgent(@Param('id') id: string): Promise<Agent> {
     return this.managerService.deleteAgent(id);
+  }
+  @Delete('deletecustomer/:id')
+  async deleteCustomer(@Param('id') id: string): Promise<Customer> {
+    return this.managerService.deleteCustomer(id);
   }
   @Put('updateagentname/:id')
   async updateAgentName(

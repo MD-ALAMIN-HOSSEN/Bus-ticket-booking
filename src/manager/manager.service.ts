@@ -93,7 +93,7 @@ export class ManagerService {
         return await this.managerAgentRepository.save(managerAgent);
       }
 
-      async deleteAgent(agentId: string): Promise<void> {
+      async deleteAgent(agentId: string): Promise<Agent> {
         // Find the agent by id and load its relations
         const agent = await this.agentRepository.findOne({
           where: { id: agentId },
@@ -108,6 +108,24 @@ export class ManagerService {
           await this.loginRepository.remove(agent.login);
     
         }
+        return agent;
+      }
+      async deleteCustomer(customerId: string): Promise<Customer> {
+        // Find the agent by id and load its relations
+        const customer = await this.customerRepository.findOne({
+          where: { id: customerId },
+          relations: ['info', 'login'],
+        });
+    
+        if (customer) {
+          // Delete the Agent record
+          await this.customerRepository.remove(customer);
+          // Delete the related Info and Login records
+          await this.infoRepository.remove(customer.info);
+          await this.loginRepository.remove(customer.login);
+    
+        }
+        return customer;
       }
       async updateAgentName(agentId: string, newName: string): Promise<Info> {
         const agent = await this.agentRepository.findOne({
@@ -122,7 +140,7 @@ export class ManagerService {
         agent.info.name = newName;
         return await this.infoRepository.save(agent.info);
       }
-      
+
       async updateCustomerName(customerId: string, newName: string): Promise<Info> {
         const customer = await this.customerRepository.findOne({
           where: { id: customerId },
