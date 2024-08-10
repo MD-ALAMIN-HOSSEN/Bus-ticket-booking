@@ -122,4 +122,18 @@ export class ManagerService {
         agent.info.name = newName;
         return await this.infoRepository.save(agent.info);
       }
+      
+      async updateCustomerName(customerId: string, newName: string): Promise<Info> {
+        const customer = await this.customerRepository.findOne({
+          where: { id: customerId },
+          relations: ['info'],
+        });
+    
+        if (!customer) {
+          throw new Error('Agent not found');
+        }
+    
+        customer.info.name = newName;
+        return await this.infoRepository.save(customer.info);
+      }
 }

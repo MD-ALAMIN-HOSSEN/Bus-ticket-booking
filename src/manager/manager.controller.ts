@@ -8,12 +8,13 @@ import {
   Delete,
   Param,
   Put,
-  Session
+  Session,
+  NotFoundException 
 } from '@nestjs/common';
 import { ManagerService } from './manager.service'; // Adjust path as per your project structure
 import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
 import { Agent } from '../entity/agent.entity';
-import { Customer } from 'src/entity';
+import { Customer, Info } from 'src/entity';
 import { CreateAgentDto } from 'src/dto/createagent.dto';
 
 @Controller('manager')
@@ -32,7 +33,7 @@ export class ManagerController {
   @Post('createagent')
   async createAgent(@Body() createAgentDto: CreateAgentDto, @Session() session: Record<string, any>): Promise<Agent> {
     const managerId = session.userId;
-    console.log("manager id is ",managerId);
+    //console.log("manager id is ",managerId);
     return this.managerService.createAgent(createAgentDto,managerId);
   }
 
@@ -44,8 +45,31 @@ export class ManagerController {
   async updateAgentName(
     @Param('id') id: string,
     @Body('name') name: string
-  ): Promise<void> {
-    await this.managerService.updateAgentName(id, name);
+  ): Promise<Info> {
+    try{
+
+      return await this.managerService.updateAgentName(id, name);
+    }catch (error) {
+      if (error.message === 'Customer not found') {
+          throw new NotFoundException(error.message);
+      }
+      throw error;
+    }
+  }
+
+  @Put('updatecustomer/:id')
+  async updateCustomerName(
+    @Param('id') id: string,
+    @Body('name') name: string
+  ): Promise<Info>{
+    try {
+       return await this.managerService.updateCustomerName(id, name);
+     } catch (error) {
+      if (error.message === 'Customer not found') {
+          throw new NotFoundException(error.message);
+      }
+      throw error;
+    }
   }
 
   @Post()
