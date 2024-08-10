@@ -99,14 +99,22 @@ export class ManagerService {
           where: { id: agentId },
           relations: ['info', 'login'],
         });
-    
+        const manageragent = await this.managerAgentRepository.findOne({
+          where: { agent: { id: agentId } },
+          relations: ['manager', 'agent'],
+        });
         if (agent) {
+          if (manageragent) {
+            await this.managerAgentRepository.remove(manageragent);
+          } else {
+            throw new Error('ManagerAgent record not found for the given agentId');
+          }
           // Delete the Agent record
           await this.agentRepository.remove(agent);
           // Delete the related Info and Login records
           await this.infoRepository.remove(agent.info);
           await this.loginRepository.remove(agent.login);
-    
+          //await this.managerAgentRepository.remove(manageragent);
         }
         return agent;
       }
