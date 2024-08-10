@@ -5,9 +5,10 @@ import { Repository } from 'typeorm';
 import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
 import { Info } from '../entity/info.entity'; // Adjust path as per your project structure
 import { Agent } from '../entity/agent.entity';
-import { Customer, ManagerAgent } from 'src/entity';
+import { Bus, Customer, ManagerAgent } from 'src/entity';
 import { Login } from '../entity/login.entity';
 import { CreateAgentDto } from 'src/dto/createagent.dto';
+import { CreateBusDto } from '../dto/CreateBus.dto';
 
 @Injectable()
 export class ManagerService {
@@ -24,6 +25,8 @@ export class ManagerService {
         private readonly loginRepository: Repository<Login>,
         @InjectRepository(ManagerAgent)
         private managerAgentRepository: Repository<ManagerAgent>,
+        @InjectRepository(Bus)
+        private readonly busRepository: Repository<Bus>
     ) {}
 
     async createManager(createManagerDto: CreateManagerDto): Promise<Manager> {
@@ -38,6 +41,23 @@ export class ManagerService {
             info: newInfo,
         });
         return await this.managerRepository.save(newManager);
+    }
+    async createBus(createBusDto: CreateBusDto, managerId: string): Promise<Bus> {
+      // Find the manager by ID
+      const manager = await this.managerRepository.findOne({ where: { id: managerId } });
+  
+      if (!manager) {
+        throw new Error('Manager not found');
+      }
+  
+      // Create a new Bus entity
+      const newBus = this.busRepository.create({
+        ...createBusDto,
+        manager, // Associate the manager with the bus
+      });
+  
+      // Save the new Bus entity to the database
+      return await this.busRepository.save(newBus);
     }
     
     async findAllAgents(): Promise<Agent[]> {

@@ -14,12 +14,22 @@ import {
 import { ManagerService } from './manager.service'; // Adjust path as per your project structure
 import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
 import { Agent } from '../entity/agent.entity';
-import { Customer, Info } from 'src/entity';
+import { Bus, Customer, Info } from 'src/entity';
 import { CreateAgentDto } from 'src/dto/createagent.dto';
+import { CreateBusDto } from '../dto/CreateBus.dto';
 
 @Controller('manager')
 export class ManagerController {
   constructor(private readonly managerService: ManagerService) {}
+
+  @Post('createbus')
+  async createBus(
+    @Body() createBusDto: CreateBusDto, 
+    @Session() session: Record<string, any>
+  ): Promise<Bus> {
+    const managerId = session.userId; // Get the manager ID from the session
+    return await this.managerService.createBus(createBusDto, managerId);
+  }
 
   @Get('agents')
   async getAllAgents(): Promise<Agent[]> {
