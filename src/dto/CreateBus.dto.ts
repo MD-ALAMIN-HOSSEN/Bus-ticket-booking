@@ -4,6 +4,5 @@ export class CreateBusDto {
 
   totalSeat: number;
 
-
   busType: string;
 }

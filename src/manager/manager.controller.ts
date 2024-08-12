@@ -22,14 +22,7 @@ import { CreateBusDto } from '../dto/CreateBus.dto';
 export class ManagerController {
   constructor(private readonly managerService: ManagerService) {}
 
-  @Post('createbus')
-  async createBus(
-    @Body() createBusDto: CreateBusDto, 
-    @Session() session: Record<string, any>
-  ): Promise<Bus> {
-    const managerId = session.userId; // Get the manager ID from the session
-    return await this.managerService.createBus(createBusDto, managerId);
-  }
+
 
   @Get('agents')
   async getAllAgents(): Promise<Agent[]> {
@@ -101,5 +94,27 @@ export class ManagerController {
         error: error.message,
       });
     }
+  }
+
+  @Post('createbus')
+  async createBus(
+    @Body() createBusDto: CreateBusDto, 
+    @Session() session: Record<string, any>
+  ): Promise<Bus> {
+    const managerId = session.userId; // Get the manager ID from the session
+    return await this.managerService.createBus(createBusDto, managerId);
+  }
+
+  @Put('update-bus-number/:id')
+  async updateBusNumber(
+    @Param('id') id: string,
+    @Body('busNumber') busNumber: string
+  ): Promise<Bus> {
+    return await this.managerService.updateBusNumber(id, busNumber);
+  }
+
+  @Get('buses')
+  async getAllBuses(): Promise<Bus[]> {
+    return this.managerService.getAllBuses();
   }
 }

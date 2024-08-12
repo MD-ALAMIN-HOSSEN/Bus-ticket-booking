@@ -42,24 +42,7 @@ export class ManagerService {
         });
         return await this.managerRepository.save(newManager);
     }
-    async createBus(createBusDto: CreateBusDto, managerId: string): Promise<Bus> {
-      // Find the manager by ID
-      const manager = await this.managerRepository.findOne({ where: { id: managerId } });
-  
-      if (!manager) {
-        throw new Error('Manager not found');
-      }
-  
-      // Create a new Bus entity
-      const newBus = this.busRepository.create({
-        ...createBusDto,
-        manager, // Associate the manager with the bus
-      });
-  
-      // Save the new Bus entity to the database
-      return await this.busRepository.save(newBus);
-    }
-    
+
     async findAllAgents(): Promise<Agent[]> {
         return await this.agentRepository.find({
             relations: ['info'],
@@ -181,5 +164,36 @@ export class ManagerService {
     
         customer.info.name = newName;
         return await this.infoRepository.save(customer.info);
+      }
+
+      async createBus(createBusDto: CreateBusDto, managerId: string): Promise<Bus> {
+        const manager = await this.managerRepository.findOne({ where: { id: managerId } });
+        if (!manager) {
+          throw new Error('Manager not found');
+        }
+    
+        const newBus = this.busRepository.create({
+          ...createBusDto,
+          manager: manager,
+        });
+    
+        return await this.busRepository.save(newBus);
+      }
+      async updateBusNumber(id: string, newBusNumber: string): Promise<Bus> {
+        const bus = await this.busRepository.findOne({
+          where: { id }, // Find by primary key
+        });
+        if (!bus) {
+          throw new NotFoundException('Bus not found');
+        }
+    
+        bus.busNumber = newBusNumber;
+        return await this.busRepository.save(bus);
+      }
+
+      async getAllBuses(): Promise<Bus[]> {
+        return await this.busRepository.find({
+          relations: ['manager'], // Include related manager details if needed
+        });
       }
 }
