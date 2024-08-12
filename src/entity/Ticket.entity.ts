@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Bus } from './Bus.entity';
+import {Agent} from './Agent.entity'
 
 @Entity()
 export class Ticket {
@@ -29,4 +30,7 @@ export class Ticket {
 
   @ManyToOne(() => Bus)
   bus: Bus;
+
+  @ManyToOne(() => Agent)
+  agent: Agent;
 }
