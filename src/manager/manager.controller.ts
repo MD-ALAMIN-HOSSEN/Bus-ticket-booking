@@ -130,4 +130,17 @@ export class ManagerController {
     //console.log("id",userId);
     return this.managerService.updateInfo(name,userId);
   }
+  @Put('updatepass/:id')
+  async updatePass(
+    @Param('id') id: string,
+    @Body('pass') pass: string,
+    @Session() session: Record<string, any>
+  ): Promise<any>{
+    //const infoId =session.user.id;
+    const userId = session.userId;  // Accessing the entire user object
+    //const infoId = user.id; 
+    //console.log("id",userId);
+     const new2 = await this.managerService.updatePass(pass,userId);
+     return { message: 'Password change successful'};
+  }
 }

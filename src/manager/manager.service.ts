@@ -202,7 +202,7 @@ export class ManagerService {
           where: { id: managerId },
           relations: ['info', 'login'],
         });
-        //console.log('Session:', manager);
+        //console.log('Session:', name);
         const infoId =manager.info.id;
         const info= await this.infoRepository.findOne({
           where: {id: infoId},
@@ -214,5 +214,24 @@ export class ManagerService {
         info.name = name;
 
         return await this.infoRepository.save(info);
+      }
+
+      async updatePass(pass: string, managerId: string): Promise<Login> {
+        const manager = await this.managerRepository.findOne({
+          where: { id: managerId },
+          relations: ['info', 'login'],
+        });
+        //console.log('Session:', manager);
+        const loginId =manager.login.id;
+        const login= await this.loginRepository.findOne({
+          where: {id: loginId},
+        });
+        if (!login) {
+          throw new NotFoundException('login not found');
+        }
+
+        login.passHash = pass;
+
+        return await this.loginRepository.save(login);
       }
 }
