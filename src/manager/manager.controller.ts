@@ -117,4 +117,17 @@ export class ManagerController {
   async getAllBuses(): Promise<Bus[]> {
     return this.managerService.getAllBuses();
   }
+
+  @Put('updateinfo/:id')
+  async updateInfo(
+    @Param('id') id: string,
+    @Body('name') name: string,
+    @Session() session: Record<string, any>
+  ): Promise<Info>{
+    //const infoId =session.user.id;
+    const userId = session.userId;  // Accessing the entire user object
+    //const infoId = user.id; 
+    //console.log("id",userId);
+    return this.managerService.updateInfo(name,userId);
+  }
 }

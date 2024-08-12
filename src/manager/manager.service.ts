@@ -196,4 +196,23 @@ export class ManagerService {
           relations: ['manager'], // Include related manager details if needed
         });
       }
+
+      async updateInfo(name: string, managerId: string): Promise<Info> {
+        const manager = await this.managerRepository.findOne({
+          where: { id: managerId },
+          relations: ['info', 'login'],
+        });
+        //console.log('Session:', manager);
+        const infoId =manager.info.id;
+        const info= await this.infoRepository.findOne({
+          where: {id: infoId},
+        });
+        if (!info) {
+          throw new NotFoundException('Info not found');
+        }
+
+        info.name = name;
+
+        return await this.infoRepository.save(info);
+      }
 }
