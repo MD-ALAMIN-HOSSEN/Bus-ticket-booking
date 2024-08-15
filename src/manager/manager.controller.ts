@@ -17,6 +17,7 @@ import { Agent } from '../entity/agent.entity';
 import { Bus, Customer, Info } from 'src/entity';
 import { CreateAgentDto } from 'src/dto/createagent.dto';
 import { CreateBusDto } from '../dto/CreateBus.dto';
+import { Ticket } from '../entity/ticket.entity';
 
 @Controller('manager')
 export class ManagerController {
@@ -142,5 +143,10 @@ export class ManagerController {
     //console.log("id",userId);
      const new2 = await this.managerService.updatePass(pass,userId);
      return { message: 'Password change successful'};
+  }
+
+  @Get('tickets')
+  async getAllTickets(): Promise<Ticket[]> {
+    return this.managerService.getAllTickets();
   }
 }

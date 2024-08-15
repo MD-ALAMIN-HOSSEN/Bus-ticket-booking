@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Manager } from '../entity/manager.entity'; // Adjust path as per your project structure
 import { Repository } from 'typeorm';
 import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
 import { Info } from '../entity/info.entity'; // Adjust path as per your project structure
 import { Agent } from '../entity/agent.entity';
-import { Bus, Customer, ManagerAgent } from 'src/entity';
+import { Bus, Customer, ManagerAgent, Ticket } from 'src/entity';
 import { Login } from '../entity/login.entity';
 import { CreateAgentDto } from 'src/dto/createagent.dto';
 import { CreateBusDto } from '../dto/CreateBus.dto';
@@ -26,7 +26,9 @@ export class ManagerService {
         @InjectRepository(ManagerAgent)
         private managerAgentRepository: Repository<ManagerAgent>,
         @InjectRepository(Bus)
-        private readonly busRepository: Repository<Bus>
+        private readonly busRepository: Repository<Bus>,
+        @InjectRepository(Ticket)
+        private readonly ticketRepository: Repository<Ticket>
     ) {}
 
     async createManager(createManagerDto: CreateManagerDto): Promise<Manager> {
@@ -233,5 +235,22 @@ export class ManagerService {
         login.passHash = pass;
 
         return await this.loginRepository.save(login);
+      }
+
+      async getAllTickets(): Promise<Ticket[]> {
+        try {
+          const tickets = await this.ticketRepository.find({
+            relations: ['bus', 'agent'],
+          });
+    
+          if (!tickets || tickets.length === 0) {
+            throw new NotFoundException('No tickets found');
+          }
+    
+          return tickets;
+
+        } catch (error) {
+          throw new InternalServerErrorException('Failed to retrieve tickets', error.message);
+        }
       }
 }
