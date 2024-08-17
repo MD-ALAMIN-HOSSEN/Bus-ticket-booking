@@ -9,7 +9,8 @@ import {
   Param,
   Put,
   Session,
-  NotFoundException 
+  NotFoundException, 
+  UseGuards
 } from '@nestjs/common';
 import { ManagerService } from './manager.service'; // Adjust path as per your project structure
 import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
@@ -18,8 +19,10 @@ import { Bus, Customer, Info } from 'src/entity';
 import { CreateAgentDto } from 'src/dto/createagent.dto';
 import { CreateBusDto } from '../dto/CreateBus.dto';
 import { Ticket } from '../entity/ticket.entity';
+import { ManagerGuard } from '../guard manager/manager.guard';
 
 @Controller('manager')
+@UseGuards(ManagerGuard)// Apply the guard at the controller level
 export class ManagerController {
   constructor(private readonly managerService: ManagerService) {}
 
