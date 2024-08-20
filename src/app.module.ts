@@ -17,12 +17,12 @@ import { Feedback } from './entity/Feedback.entity';
 import { Report } from './entity/Report.entity';
 import { Notification } from './entity/Notification.entity';
 import { TicketBookInfo } from './entity/TicketBookInfo.entity';
-import { InfoModule } from './manager/info.module';
+//import { InfoModule } from './manager/info.module';
 import { ManagerModule } from './manager/manager.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports:[ InfoModule,TypeOrmModule.forRoot(
+  imports:[ TypeOrmModule.forRoot(
     { type: 'postgres',
     host: 'localhost',
     port: 5001,

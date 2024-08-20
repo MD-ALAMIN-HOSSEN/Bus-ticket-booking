@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { InjectRepository } from '@nestjs/typeorm';
 import { Manager } from '../entity/manager.entity'; // Adjust path as per your project structure
 import { Repository } from 'typeorm';
-import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
+//import { CreateManagerDto } from './create-manager.dto'; // Adjust path as per your project structure
 import { Info } from '../entity/info.entity'; // Adjust path as per your project structure
 import { Agent } from '../entity/agent.entity';
 import { Bus, Customer, ManagerAgent, Ticket } from 'src/entity';
@@ -31,19 +31,7 @@ export class ManagerService {
         private readonly ticketRepository: Repository<Ticket>
     ) {}
 
-    async createManager(createManagerDto: CreateManagerDto): Promise<Manager> {
-        const { info } = createManagerDto;
 
-        // Create Info entity
-        const newInfo = this.infoRepository.create(info);
-        await this.infoRepository.save(newInfo);
-
-        // Create Manager entity
-        const newManager = this.managerRepository.create({
-            info: newInfo,
-        });
-        return await this.managerRepository.save(newManager);
-    }
 
     async findAllAgents(): Promise<Agent[]> {
         return await this.agentRepository.find({
@@ -161,7 +149,7 @@ export class ManagerService {
         });
     
         if (!customer) {
-          throw new Error('Agent not found');
+          throw new Error('Customer not found');
         }
     
         customer.info.name = newName;
